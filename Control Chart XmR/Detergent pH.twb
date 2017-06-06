@@ -1,0 +1,541 @@
+<?xml version='1.0' encoding='utf-8' ?>
+
+<!-- build 10000.16.1004.1720                               -->
+<workbook source-build='10.0.2 (10000.16.1004.1720)' source-platform='win' version='10.0' xmlns:user='http://www.tableausoftware.com/xml/user'>
+  <preferences>
+    <preference name='ui.encoding.shelf.height' value='24' />
+    <preference name='ui.shelf.height' value='26' />
+  </preferences>
+  <datasources>
+    <datasource hasconnection='false' inline='true' name='Parameters' version='10.0'>
+      <aliases enabled='yes' />
+      <column caption='Multiples' datatype='integer' name='[Parameter 2]' param-domain-type='list' role='measure' type='quantitative' value='3'>
+        <calculation class='tableau' formula='3' />
+        <members>
+          <member value='1' />
+          <member value='2' />
+          <member value='3' />
+        </members>
+      </column>
+    </datasource>
+    <datasource caption='Detergent pH (DetergentpH)' inline='true' name='federated.15awws00c7mqrr15shw9m1xssl44' version='10.0'>
+      <connection class='federated'>
+        <named-connections>
+          <named-connection caption='DetergentpH' name='excel-direct.0odi7fj1pcx6vf19cquln1db6lh8'>
+            <connection class='excel-direct' cleaning='no' compat='no' dataRefreshTime='' filename='C:\Users\BP959771\Downloads\tableau\Workbooks\Control Chart XmR\DetergentpH.xls' interpretationMode='0' password='' server='' validate='no' />
+          </named-connection>
+        </named-connections>
+        <relation connection='excel-direct.0odi7fj1pcx6vf19cquln1db6lh8' name='Detergent pH' table='[&apos;Detergent pH$&apos;]' type='table'>
+          <columns gridOrigin='A1:B26:no:A1:B26:0' header='yes' outcome='6'>
+            <column datatype='integer' name='Batch ID' ordinal='0' />
+            <column datatype='real' name='pH' ordinal='1' />
+          </columns>
+        </relation>
+        <metadata-records>
+          <metadata-record class='column'>
+            <remote-name>Batch ID</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Batch ID]</local-name>
+            <parent-name>[Detergent pH]</parent-name>
+            <remote-alias>Batch ID</remote-alias>
+            <ordinal>0</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>pH</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[pH]</local-name>
+            <parent-name>[Detergent pH]</parent-name>
+            <remote-alias>pH</remote-alias>
+            <ordinal>1</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>15</precision>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;R8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='capability'>
+            <remote-name />
+            <remote-type>0</remote-type>
+            <parent-name>[Detergent pH]</parent-name>
+            <remote-alias />
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='context'>0</attribute>
+              <attribute datatype='string' name='gridOrigin'>&quot;A1:B26:no:A1:B26:0&quot;</attribute>
+              <attribute datatype='boolean' name='header'>true</attribute>
+              <attribute datatype='integer' name='outcome'>6</attribute>
+            </attributes>
+          </metadata-record>
+        </metadata-records>
+      </connection>
+      <aliases enabled='yes' />
+      <column datatype='integer' name='[Batch ID]' role='dimension' type='ordinal' />
+      <column caption='Moving Range' datatype='real' name='[Calculation_507499387761168389]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='ABS(ZN(SUM([pH]))-LOOKUP(ZN(SUM([pH])),-1))'>
+          <table-calc ordering-type='Rows' />
+        </calculation>
+      </column>
+      <column caption='UCL mR' datatype='real' name='[Calculation_507499387762900998]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='3.267*WINDOW_AVG(([Calculation_507499387761168389]))'>
+          <table-calc ordering-type='Rows' />
+        </calculation>
+      </column>
+      <column caption='UCL' datatype='real' name='[Calculation_507499387763195911]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='SUM([pH])+[Parameters].[Parameter 2]*WINDOW_AVG([Calculation_507499387761168389])/1.128'>
+          <table-calc ordering-type='Rows' />
+        </calculation>
+      </column>
+      <column caption='Signals' datatype='string' name='[Calculation_507499387764125704]' role='measure' type='nominal'>
+        <calculation class='tableau' formula='//Individuals Chart Signals Equation:&#13;&#10;IF &#13;&#10;Sum([pH])&gt;(WINDOW_AVG(Sum([pH]))+3*(WINDOW_AVG([Calculation_507499387761168389]))/1.128) &#13;&#10;THEN &apos;Outlier&apos; &#13;&#10;ELSEIF &#13;&#10;Sum([pH])&lt;(WINDOW_AVG(Sum([pH]))-3*(WINDOW_AVG([Calculation_507499387761168389]))/1.128) &#13;&#10;THEN &apos;Outlier&apos; &#13;&#10;ELSEIF &#13;&#10;Sum([pH])&gt;LOOKUP(Sum([pH]),-1) AND &#13;&#10;LOOKUP(Sum([pH]),-1)&gt;LOOKUP(Sum([pH]),-2) AND &#13;&#10;LOOKUP(Sum([pH]),-2)&gt;LOOKUP(Sum([pH]),-3) AND &#13;&#10;LOOKUP(Sum([pH]),-3)&gt;LOOKUP(Sum([pH]),-4) AND &#13;&#10;LOOKUP(Sum([pH]),-4)&gt;LOOKUP(Sum([pH]),-5) AND&#13;&#10;LOOKUP(Sum([pH]),-5)&gt;LOOKUP(Sum([pH]),-6)&#13;&#10;THEN &apos;Trend&apos; &#13;&#10;ELSEIF &#13;&#10;Sum([pH])&lt;LOOKUP(Sum([pH]),-1) AND &#13;&#10;LOOKUP(Sum([pH]),-1)&lt;LOOKUP(Sum([pH]),-2) AND &#13;&#10;LOOKUP(Sum([pH]),-2)&lt;LOOKUP(Sum([pH]),-3) AND &#13;&#10;LOOKUP(Sum([pH]),-3)&lt;LOOKUP(Sum([pH]),-4) AND &#13;&#10;LOOKUP(Sum([pH]),-4)&lt;LOOKUP(Sum([pH]),-5) AND&#13;&#10;LOOKUP(Sum([pH]),-5)&lt;LOOKUP(Sum([pH]),-6)&#13;&#10;THEN &apos;Trend&apos; &#13;&#10;&#13;&#10;ELSEIF &#13;&#10;Sum([pH])&gt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-1)&gt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-2)&gt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-3)&gt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-4)&gt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-5)&gt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-6)&gt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-7)&gt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-8)&gt;WINDOW_AVG(Sum([pH])) &#13;&#10;THEN &apos;Shift&apos; &#13;&#10;ELSEIF &#13;&#10;Sum([pH])&lt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-1)&lt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-2)&lt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-3)&lt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-4)&lt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-5)&lt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-6)&lt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-7)&lt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-8)&lt;WINDOW_AVG(Sum([pH])) &#13;&#10;THEN &apos;Shift&apos; &#13;&#10;ELSE &apos;In Range&apos; &#13;&#10;END'>
+          <table-calc ordering-type='Rows' />
+        </calculation>
+      </column>
+      <column caption='Signals mR' datatype='string' name='[Calculation_507499387764895753]' role='measure' type='nominal'>
+        <calculation class='tableau' formula='//Moving Range Chart Signals Equation:&#13;&#10;IF &#13;&#10;[Calculation_507499387761168389] &gt; 3.267*(WINDOW_AVG([Calculation_507499387761168389])) &#13;&#10;THEN &apos;Outlier&apos; &#13;&#10;ELSEIF &#13;&#10;[Calculation_507499387761168389]&gt;LOOKUP([Calculation_507499387761168389],-1) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-1)&gt;LOOKUP([Calculation_507499387761168389],-2) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-2)&gt;LOOKUP([Calculation_507499387761168389],-3) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-3)&gt;LOOKUP([Calculation_507499387761168389],-4) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-4)&gt;LOOKUP([Calculation_507499387761168389],-5)  AND&#13;&#10;LOOKUP([Calculation_507499387761168389],-5)&gt;LOOKUP([Calculation_507499387761168389],-6)  &#13;&#10;THEN &apos;Trend&apos; &#13;&#10;ELSEIF &#13;&#10;[Calculation_507499387761168389]&lt;LOOKUP([Calculation_507499387761168389],-1) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-1)&lt;LOOKUP([Calculation_507499387761168389],-2) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-2)&lt;LOOKUP([Calculation_507499387761168389],-3) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-3)&lt;LOOKUP([Calculation_507499387761168389],-4) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-4)&lt;LOOKUP([Calculation_507499387761168389],-5) AND&#13;&#10;LOOKUP([Calculation_507499387761168389],-5)&lt;LOOKUP([Calculation_507499387761168389],-6)  &#13;&#10;THEN &apos;Trend&apos; &#13;&#10;ELSEIF &#13;&#10;[Calculation_507499387761168389]&gt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-1)&gt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-2)&gt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-3)&gt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-4)&gt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-5)&gt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-6)&gt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-7)&gt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-8)&gt;WINDOW_AVG([Calculation_507499387761168389]) &#13;&#10;THEN &apos;Shift&apos; &#13;&#10;ELSEIF &#13;&#10;[Calculation_507499387761168389]&lt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-1)&lt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-2)&lt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-3)&lt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-4)&lt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-5)&lt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-6)&lt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-7)&lt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-8)&lt;WINDOW_AVG([Calculation_507499387761168389]) &#13;&#10;THEN &apos;Shift&apos; &#13;&#10;ELSE &apos;In Range&apos; &#13;&#10;END'>
+          <table-calc ordering-type='Rows' />
+        </calculation>
+      </column>
+      <column datatype='integer' name='[Number of Records]' role='measure' type='quantitative' user:auto-column='numrec'>
+        <calculation class='tableau' formula='1' />
+      </column>
+      <column caption='LCL' datatype='real' name='[UCL (copy)]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='SUM([pH])-[Parameters].[Parameter 2]*WINDOW_AVG([Calculation_507499387761168389])/1.128'>
+          <table-calc ordering-type='Rows' />
+        </calculation>
+      </column>
+      <column caption='pH' datatype='real' name='[pH]' role='measure' type='quantitative' />
+      <column-instance column='[Calculation_507499387764125704]' derivation='User' name='[usr:Calculation_507499387764125704:nk:1]' pivot='key' type='nominal'>
+        <table-calc ordering-type='Rows' />
+        <table-calc field='[federated.15awws00c7mqrr15shw9m1xssl44].[Calculation_507499387761168389]' ordering-type='Rows' />
+      </column-instance>
+      <layout dim-ordering='alphabetic' dim-percentage='0.280566' measure-ordering='alphabetic' measure-percentage='0.465894' parameter-percentage='0.253539' show-structure='true' />
+      <style>
+        <style-rule element='mark'>
+          <encoding attr='color' field='[usr:Calculation_507499387764125704:nk:1]' type='palette'>
+            <map to='#2a5783'>
+              <bucket>&quot;In Range&quot;</bucket>
+            </map>
+            <map to='#ae123a'>
+              <bucket>&quot;Outlier&quot;</bucket>
+            </map>
+          </encoding>
+        </style-rule>
+      </style>
+      <semantic-values>
+        <semantic-value key='[Country].[Name]' value='&quot;United States&quot;' />
+      </semantic-values>
+      <field-sort-info field-sort-order-type='custom-order'>
+        <field-sort-custom-order field='Batch ID' />
+        <field-sort-custom-order field='pH' />
+      </field-sort-info>
+      <datasource-dependencies datasource='Parameters'>
+        <column caption='Multiples' datatype='integer' name='[Parameter 2]' param-domain-type='list' role='measure' type='quantitative' value='3'>
+          <calculation class='tableau' formula='3' />
+        </column>
+      </datasource-dependencies>
+    </datasource>
+  </datasources>
+  <worksheets>
+    <worksheet name='XmR control charts'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='Detergent pH (DetergentpH)' name='federated.15awws00c7mqrr15shw9m1xssl44' />
+            <datasource name='Parameters' />
+          </datasources>
+          <datasource-dependencies datasource='Parameters'>
+            <column caption='Multiples' datatype='integer' name='[Parameter 2]' param-domain-type='list' role='measure' type='quantitative' value='3'>
+              <calculation class='tableau' formula='3' />
+            </column>
+          </datasource-dependencies>
+          <datasource-dependencies datasource='federated.15awws00c7mqrr15shw9m1xssl44'>
+            <column datatype='integer' name='[Batch ID]' role='dimension' type='ordinal' />
+            <column caption='Moving Range' datatype='real' name='[Calculation_507499387761168389]' role='measure' type='quantitative'>
+              <calculation class='tableau' formula='ABS(ZN(SUM([pH]))-LOOKUP(ZN(SUM([pH])),-1))'>
+                <table-calc ordering-type='Rows' />
+              </calculation>
+            </column>
+            <column caption='UCL mR' datatype='real' name='[Calculation_507499387762900998]' role='measure' type='quantitative'>
+              <calculation class='tableau' formula='3.267*WINDOW_AVG(([Calculation_507499387761168389]))'>
+                <table-calc ordering-type='Rows' />
+              </calculation>
+            </column>
+            <column caption='UCL' datatype='real' name='[Calculation_507499387763195911]' role='measure' type='quantitative'>
+              <calculation class='tableau' formula='SUM([pH])+[Parameters].[Parameter 2]*WINDOW_AVG([Calculation_507499387761168389])/1.128'>
+                <table-calc ordering-type='Rows' />
+              </calculation>
+            </column>
+            <column caption='Signals' datatype='string' name='[Calculation_507499387764125704]' role='measure' type='nominal'>
+              <calculation class='tableau' formula='//Individuals Chart Signals Equation:&#13;&#10;IF &#13;&#10;Sum([pH])&gt;(WINDOW_AVG(Sum([pH]))+3*(WINDOW_AVG([Calculation_507499387761168389]))/1.128) &#13;&#10;THEN &apos;Outlier&apos; &#13;&#10;ELSEIF &#13;&#10;Sum([pH])&lt;(WINDOW_AVG(Sum([pH]))-3*(WINDOW_AVG([Calculation_507499387761168389]))/1.128) &#13;&#10;THEN &apos;Outlier&apos; &#13;&#10;ELSEIF &#13;&#10;Sum([pH])&gt;LOOKUP(Sum([pH]),-1) AND &#13;&#10;LOOKUP(Sum([pH]),-1)&gt;LOOKUP(Sum([pH]),-2) AND &#13;&#10;LOOKUP(Sum([pH]),-2)&gt;LOOKUP(Sum([pH]),-3) AND &#13;&#10;LOOKUP(Sum([pH]),-3)&gt;LOOKUP(Sum([pH]),-4) AND &#13;&#10;LOOKUP(Sum([pH]),-4)&gt;LOOKUP(Sum([pH]),-5) AND&#13;&#10;LOOKUP(Sum([pH]),-5)&gt;LOOKUP(Sum([pH]),-6)&#13;&#10;THEN &apos;Trend&apos; &#13;&#10;ELSEIF &#13;&#10;Sum([pH])&lt;LOOKUP(Sum([pH]),-1) AND &#13;&#10;LOOKUP(Sum([pH]),-1)&lt;LOOKUP(Sum([pH]),-2) AND &#13;&#10;LOOKUP(Sum([pH]),-2)&lt;LOOKUP(Sum([pH]),-3) AND &#13;&#10;LOOKUP(Sum([pH]),-3)&lt;LOOKUP(Sum([pH]),-4) AND &#13;&#10;LOOKUP(Sum([pH]),-4)&lt;LOOKUP(Sum([pH]),-5) AND&#13;&#10;LOOKUP(Sum([pH]),-5)&lt;LOOKUP(Sum([pH]),-6)&#13;&#10;THEN &apos;Trend&apos; &#13;&#10;&#13;&#10;ELSEIF &#13;&#10;Sum([pH])&gt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-1)&gt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-2)&gt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-3)&gt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-4)&gt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-5)&gt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-6)&gt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-7)&gt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-8)&gt;WINDOW_AVG(Sum([pH])) &#13;&#10;THEN &apos;Shift&apos; &#13;&#10;ELSEIF &#13;&#10;Sum([pH])&lt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-1)&lt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-2)&lt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-3)&lt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-4)&lt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-5)&lt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-6)&lt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-7)&lt;WINDOW_AVG(Sum([pH])) AND &#13;&#10;LOOKUP(Sum([pH]),-8)&lt;WINDOW_AVG(Sum([pH])) &#13;&#10;THEN &apos;Shift&apos; &#13;&#10;ELSE &apos;In Range&apos; &#13;&#10;END'>
+                <table-calc ordering-type='Rows' />
+              </calculation>
+            </column>
+            <column caption='Signals mR' datatype='string' name='[Calculation_507499387764895753]' role='measure' type='nominal'>
+              <calculation class='tableau' formula='//Moving Range Chart Signals Equation:&#13;&#10;IF &#13;&#10;[Calculation_507499387761168389] &gt; 3.267*(WINDOW_AVG([Calculation_507499387761168389])) &#13;&#10;THEN &apos;Outlier&apos; &#13;&#10;ELSEIF &#13;&#10;[Calculation_507499387761168389]&gt;LOOKUP([Calculation_507499387761168389],-1) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-1)&gt;LOOKUP([Calculation_507499387761168389],-2) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-2)&gt;LOOKUP([Calculation_507499387761168389],-3) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-3)&gt;LOOKUP([Calculation_507499387761168389],-4) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-4)&gt;LOOKUP([Calculation_507499387761168389],-5)  AND&#13;&#10;LOOKUP([Calculation_507499387761168389],-5)&gt;LOOKUP([Calculation_507499387761168389],-6)  &#13;&#10;THEN &apos;Trend&apos; &#13;&#10;ELSEIF &#13;&#10;[Calculation_507499387761168389]&lt;LOOKUP([Calculation_507499387761168389],-1) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-1)&lt;LOOKUP([Calculation_507499387761168389],-2) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-2)&lt;LOOKUP([Calculation_507499387761168389],-3) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-3)&lt;LOOKUP([Calculation_507499387761168389],-4) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-4)&lt;LOOKUP([Calculation_507499387761168389],-5) AND&#13;&#10;LOOKUP([Calculation_507499387761168389],-5)&lt;LOOKUP([Calculation_507499387761168389],-6)  &#13;&#10;THEN &apos;Trend&apos; &#13;&#10;ELSEIF &#13;&#10;[Calculation_507499387761168389]&gt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-1)&gt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-2)&gt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-3)&gt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-4)&gt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-5)&gt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-6)&gt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-7)&gt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-8)&gt;WINDOW_AVG([Calculation_507499387761168389]) &#13;&#10;THEN &apos;Shift&apos; &#13;&#10;ELSEIF &#13;&#10;[Calculation_507499387761168389]&lt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-1)&lt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-2)&lt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-3)&lt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-4)&lt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-5)&lt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-6)&lt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-7)&lt;WINDOW_AVG([Calculation_507499387761168389]) AND &#13;&#10;LOOKUP([Calculation_507499387761168389],-8)&lt;WINDOW_AVG([Calculation_507499387761168389]) &#13;&#10;THEN &apos;Shift&apos; &#13;&#10;ELSE &apos;In Range&apos; &#13;&#10;END'>
+                <table-calc ordering-type='Rows' />
+              </calculation>
+            </column>
+            <column caption='LCL' datatype='real' name='[UCL (copy)]' role='measure' type='quantitative'>
+              <calculation class='tableau' formula='SUM([pH])-[Parameters].[Parameter 2]*WINDOW_AVG([Calculation_507499387761168389])/1.128'>
+                <table-calc ordering-type='Rows' />
+              </calculation>
+            </column>
+            <column-instance column='[Batch ID]' derivation='None' name='[none:Batch ID:ok]' pivot='key' type='ordinal' />
+            <column caption='pH' datatype='real' name='[pH]' role='measure' type='quantitative' />
+            <column-instance column='[pH]' derivation='Sum' name='[sum:pH:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[Calculation_507499387761168389]' derivation='User' name='[usr:Calculation_507499387761168389:qk]' pivot='key' type='quantitative'>
+              <table-calc ordering-type='Rows' />
+            </column-instance>
+            <column-instance column='[Calculation_507499387762900998]' derivation='User' name='[usr:Calculation_507499387762900998:qk:1]' pivot='key' type='quantitative'>
+              <table-calc ordering-type='Rows' />
+              <table-calc field='[federated.15awws00c7mqrr15shw9m1xssl44].[Calculation_507499387761168389]' ordering-type='Rows' />
+            </column-instance>
+            <column-instance column='[Calculation_507499387763195911]' derivation='User' name='[usr:Calculation_507499387763195911:qk:1]' pivot='key' type='quantitative'>
+              <table-calc ordering-type='Rows' />
+              <table-calc field='[federated.15awws00c7mqrr15shw9m1xssl44].[Calculation_507499387761168389]' ordering-type='Rows' />
+            </column-instance>
+            <column-instance column='[Calculation_507499387764125704]' derivation='User' name='[usr:Calculation_507499387764125704:nk:1]' pivot='key' type='nominal'>
+              <table-calc ordering-type='Rows' />
+              <table-calc field='[federated.15awws00c7mqrr15shw9m1xssl44].[Calculation_507499387761168389]' ordering-type='Rows' />
+            </column-instance>
+            <column-instance column='[Calculation_507499387764895753]' derivation='User' name='[usr:Calculation_507499387764895753:nk:2]' pivot='key' type='nominal'>
+              <table-calc ordering-type='Rows' />
+              <table-calc field='[federated.15awws00c7mqrr15shw9m1xssl44].[Calculation_507499387761168389]' ordering-type='Rows' />
+            </column-instance>
+            <column-instance column='[UCL (copy)]' derivation='User' name='[usr:UCL (copy):qk:1]' pivot='key' type='quantitative'>
+              <table-calc ordering-type='Rows' />
+              <table-calc field='[federated.15awws00c7mqrr15shw9m1xssl44].[Calculation_507499387761168389]' ordering-type='Rows' />
+            </column-instance>
+          </datasource-dependencies>
+          <aggregation value='false' />
+        </view>
+        <style>
+          <style-rule element='axis'>
+            <encoding attr='space' class='0' domain-expand='false' field='[federated.15awws00c7mqrr15shw9m1xssl44].[sum:pH:qk]' field-type='quantitative' scope='rows' type='space' />
+            <format attr='subtitle' class='0' field='[federated.15awws00c7mqrr15shw9m1xssl44].[sum:pH:qk]' scope='rows' value='' />
+            <format attr='auto-subtitle' class='0' field='[federated.15awws00c7mqrr15shw9m1xssl44].[sum:pH:qk]' scope='rows' value='true' />
+          </style-rule>
+          <style-rule element='refline'>
+            <format attr='fill-above' id='refline0' value='#00000000' />
+            <format attr='fill-below' id='refline0' value='#00000000' />
+            <format attr='fill-above' id='refline1' value='#00000000' />
+            <format attr='fill-below' id='refline1' value='#00000000' />
+            <format attr='fill-above' id='refline2' value='#00000000' />
+            <format attr='fill-below' id='refline2' value='#00000000' />
+            <format attr='stroke-color' id='refline0' value='#0000004e' />
+            <format attr='stroke-color' id='refline2' value='#0000004e' />
+            <format attr='fill-above' id='refline3' value='#00000000' />
+            <format attr='fill-below' id='refline3' value='#00000000' />
+            <format attr='stroke-color' id='refline3' value='#e15759' />
+            <format attr='fill-above' id='refline4' value='#00000000' />
+            <format attr='fill-below' id='refline4' value='#00000000' />
+            <format attr='stroke-color' id='refline4' value='#e15759' />
+            <format attr='fill-above' id='refline5' value='#00000000' />
+            <format attr='fill-below' id='refline5' value='#00000000' />
+            <format attr='background-color' id='refline5' value='#ffffff' />
+            <format attr='stroke-color' id='refline5' value='#e15759' />
+          </style-rule>
+          <style-rule element='legend-title-text'>
+            <format attr='color' field='[federated.15awws00c7mqrr15shw9m1xssl44].[usr:Calculation_507499387764125704:nk:1]' value='Signals X' />
+            <format attr='color' field='[federated.15awws00c7mqrr15shw9m1xssl44].[usr:Calculation_507499387764895753:nk:2]' value='Signals mR' />
+          </style-rule>
+        </style>
+        <panes>
+          <pane>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Line' />
+            <encodings>
+              <lod column='[federated.15awws00c7mqrr15shw9m1xssl44].[usr:Calculation_507499387763195911:qk:1]' />
+              <lod column='[federated.15awws00c7mqrr15shw9m1xssl44].[usr:UCL (copy):qk:1]' />
+              <lod column='[federated.15awws00c7mqrr15shw9m1xssl44].[usr:Calculation_507499387762900998:qk:1]' />
+            </encodings>
+            <reference-line axis-column='[federated.15awws00c7mqrr15shw9m1xssl44].[sum:pH:qk]' enable-instant-analytics='true' formula='average' id='refline0' label-type='automatic' probability='95' scope='per-pane' value-column='[federated.15awws00c7mqrr15shw9m1xssl44].[sum:pH:qk]' z-order='1' />
+            <reference-line axis-column='[federated.15awws00c7mqrr15shw9m1xssl44].[usr:Calculation_507499387761168389:qk]' enable-instant-analytics='true' formula='average' id='refline2' label='Average Moving Range' label-type='custom' probability='95' scope='per-pane' value-column='[federated.15awws00c7mqrr15shw9m1xssl44].[usr:Calculation_507499387761168389:qk]' z-order='2' />
+            <reference-line axis-column='[federated.15awws00c7mqrr15shw9m1xssl44].[sum:pH:qk]' enable-instant-analytics='true' formula='average' id='refline3' label='UCL' label-type='custom' probability='95' scope='per-pane' value-column='[federated.15awws00c7mqrr15shw9m1xssl44].[usr:Calculation_507499387763195911:qk:1]' z-order='3' />
+            <reference-line axis-column='[federated.15awws00c7mqrr15shw9m1xssl44].[sum:pH:qk]' enable-instant-analytics='true' formula='average' id='refline4' label='LCL' label-type='custom' probability='95' scope='per-pane' value-column='[federated.15awws00c7mqrr15shw9m1xssl44].[usr:UCL (copy):qk:1]' z-order='4' />
+            <reference-line axis-column='[federated.15awws00c7mqrr15shw9m1xssl44].[usr:Calculation_507499387761168389:qk]' enable-instant-analytics='true' formula='average' id='refline5' label='UCL mR' label-type='custom' probability='95' scope='per-pane' value-column='[federated.15awws00c7mqrr15shw9m1xssl44].[usr:Calculation_507499387762900998:qk:1]' z-order='5' />
+          </pane>
+          <pane id='1' y-axis-name='[federated.15awws00c7mqrr15shw9m1xssl44].[sum:pH:qk]'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Line' />
+            <encodings>
+              <color column='[federated.15awws00c7mqrr15shw9m1xssl44].[usr:Calculation_507499387764125704:nk:1]' />
+              <lod column='[federated.15awws00c7mqrr15shw9m1xssl44].[usr:Calculation_507499387763195911:qk:1]' />
+              <lod column='[federated.15awws00c7mqrr15shw9m1xssl44].[usr:UCL (copy):qk:1]' />
+              <lod column='[federated.15awws00c7mqrr15shw9m1xssl44].[usr:Calculation_507499387762900998:qk:1]' />
+            </encodings>
+            <style>
+              <style-rule element='mark'>
+                <format attr='mark-markers-mode' value='all' />
+              </style-rule>
+            </style>
+          </pane>
+          <pane id='3' y-axis-name='[federated.15awws00c7mqrr15shw9m1xssl44].[usr:Calculation_507499387761168389:qk]'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Line' />
+            <encodings>
+              <color column='[federated.15awws00c7mqrr15shw9m1xssl44].[usr:Calculation_507499387764895753:nk:2]' />
+              <lod column='[federated.15awws00c7mqrr15shw9m1xssl44].[usr:Calculation_507499387763195911:qk:1]' />
+              <lod column='[federated.15awws00c7mqrr15shw9m1xssl44].[usr:UCL (copy):qk:1]' />
+              <lod column='[federated.15awws00c7mqrr15shw9m1xssl44].[usr:Calculation_507499387762900998:qk:1]' />
+            </encodings>
+            <style>
+              <style-rule element='mark'>
+                <format attr='mark-markers-mode' value='all' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows>([federated.15awws00c7mqrr15shw9m1xssl44].[sum:pH:qk] + [federated.15awws00c7mqrr15shw9m1xssl44].[usr:Calculation_507499387761168389:qk])</rows>
+        <cols>[federated.15awws00c7mqrr15shw9m1xssl44].[none:Batch ID:ok]</cols>
+      </table>
+    </worksheet>
+  </worksheets>
+  <windows source-height='30'>
+    <window class='worksheet' maximized='true' name='XmR control charts'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='title' />
+          </strip>
+        </edge>
+        <edge name='right'>
+          <strip size='160'>
+            <card pane-specification-id='1' param='[federated.15awws00c7mqrr15shw9m1xssl44].[usr:Calculation_507499387764125704:nk:1]' type='color' />
+            <card pane-specification-id='3' param='[federated.15awws00c7mqrr15shw9m1xssl44].[usr:Calculation_507499387764895753:nk:2]' type='color' />
+            <card mode='compact' param='[Parameters].[Parameter 2]' type='parameter' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <highlight>
+          <color-one-way>
+            <field>[federated.15awws00c7mqrr15shw9m1xssl44].[none:Batch ID:ok]</field>
+            <field>[federated.15awws00c7mqrr15shw9m1xssl44].[usr:Calculation_507499387764125704:nk:1]</field>
+            <field>[federated.15awws00c7mqrr15shw9m1xssl44].[usr:Calculation_507499387764895753:nk:2]</field>
+          </color-one-way>
+        </highlight>
+      </viewpoint>
+    </window>
+  </windows>
+  <thumbnails>
+    <thumbnail height='192' name='XmR control charts' width='192'>
+      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
+      jWOuegHjHfv/ZGSqkVIWmV0AAAAASUVORK5CYII=
+    </thumbnail>
+  </thumbnails>
+</workbook>
